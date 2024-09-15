@@ -14,8 +14,10 @@ export type Receiver = {
 };
 
 export type CreateOrderRequest = {
+  userId: number;
   itemList: OrderItem[];
   totalOrder: number;
   orderType: OrderType;
   receiver: Receiver;
+  note?: string;
 };

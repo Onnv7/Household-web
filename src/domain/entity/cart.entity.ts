@@ -6,13 +6,13 @@ export type LocationEntity = {
   id: string;
 };
 
-export type CustomerOrderInfoEntity = {
+export type DeliveryOrderInfoEntity = {
   name: string;
   phoneNumber: string;
   orderType: OrderType;
-  province: LocationEntity;
-  district: LocationEntity;
-  ward: LocationEntity;
+  province: string;
+  district: string;
+  ward: string;
   details: string;
   note?: string;
 };

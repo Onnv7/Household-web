@@ -1,6 +1,6 @@
 import ProductImage from './components/ProductImageComponent';
 import ProductReviewComponent from './components/ProductReviewComponent';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { getProductDetails } from '../../domain/usecase/product.usecase';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ProductDetailsEntity } from '../../domain/entity/product.entity';
@@ -19,7 +19,7 @@ const ProductPage = () => {
   );
   const [productData, setProductData] = useState<ProductDetailsEntity>();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const loadingData = async () => {
       const data = await getProductDetails(Number(id));
       setProductData(data);
@@ -50,10 +50,6 @@ const ProductPage = () => {
               className={
                 productInfoOption === InfoOption.REVIEW ? 'text-primary-1' : ''
               }
-              onClick={() => {
-                // setProductInfoOption(InfoOption.REVIEW)
-                navigate(`/a`);
-              }}
             >
               Đánh giá
             </li>

@@ -1,5 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-import DeliveryTextInput from './DeliveryTextInput';
+import { useEffect, useState } from 'react';
 import ARROW_DOWN_ICON from '../../../../assets/icon/arrow_down_icon.svg';
 import AddressModal from './AddressModal';
 import {
@@ -8,20 +7,19 @@ import {
   getWardList,
 } from '../../../../domain/usecase/cart.usecase';
 import {
+  AddressChosenEntity,
   LocationEntity,
-  ProvinceEntity,
 } from '../../../../domain/entity/address.entity';
-import { useSelector } from 'react-redux';
-import { cartSelector } from '../../../../store/selectors';
-import { useAppDispatch } from '../../../../store/store';
-import { updateCustomerAddressInfoAction } from '../../redux/cart.slice';
-import { checkInputNotEmpty } from '../../../../common/ultils/check.ultil';
-import { OrderType } from '../../../../common/enum/enum';
-
-function ShippingForm() {
-  const cartPayload = useSelector(cartSelector);
-  const dispatch = useAppDispatch();
-
+import { UseFormReturn } from 'react-hook-form';
+import AppInputText from '../../../../common/components/AppInputText';
+import { DeliveryOrderInfoEntity } from '../../../../domain/entity/cart.entity';
+type ShippingFormProps = {
+  form: UseFormReturn<DeliveryOrderInfoEntity, any, undefined>;
+};
+function ShippingForm({ form }: ShippingFormProps) {
+  const { register, formState, getValues, setValue } = form;
+  const [addressId, setAddressId] = useState<AddressChosenEntity>();
+  const { errors } = formState;
   const [openModal, setOpenModal] = useState({
     province: false,
     district: false,
@@ -56,7 +54,15 @@ function ShippingForm() {
           return { ...prev, province: false };
         });
       onChoose = (data) => {
-        dispatch(updateCustomerAddressInfoAction({ province: data }));
+        setValue('province', data.name);
+        setValue('district', '');
+        setValue('ward', '');
+        setAddressId((prev) => {
+          return {
+            ...prev,
+            provinceId: data.id,
+          };
+        });
       };
 
       dataList = () => getProvinceListData();
@@ -67,10 +73,16 @@ function ShippingForm() {
           return { ...prev, district: false };
         });
       onChoose = (data: any) => {
-        dispatch(updateCustomerAddressInfoAction({ district: data }));
+        setValue('district', data.name);
+        setValue('ward', '');
+        setAddressId((prev) => {
+          return {
+            ...prev,
+            districtId: data.id,
+          };
+        });
       };
-      dataList = async () =>
-        getDistrictList(cartPayload.receiver.province?.id!);
+      dataList = async () => getDistrictList(addressId?.provinceId!);
     } else if (openModal.ward) {
       title = 'Phường/Xã';
       onClose = () =>
@@ -78,13 +90,16 @@ function ShippingForm() {
           return { ...prev, ward: false };
         });
       onChoose = (data: any) => {
-        dispatch(updateCustomerAddressInfoAction({ ward: data }));
+        setValue('ward', data.name);
+        setAddressId((prev) => {
+          return {
+            ...prev,
+            wardId: data.id,
+          };
+        });
       };
       dataList = async () =>
-        getWardList(
-          cartPayload.receiver.province?.id!,
-          cartPayload.receiver.district?.id!,
-        );
+        getWardList(addressId?.provinceId!, addressId?.districtId!);
     } else {
       return <></>;
     }
@@ -100,8 +115,9 @@ function ShippingForm() {
 
   return (
     <>
-      <DeliveryTextInput
-        name="province"
+      <AppInputText
+        disabled={true}
+        register={register('province')}
         placeHolder="Tỉnh/Thành phố"
         required
         suffixIcon={ARROW_DOWN_ICON}
@@ -110,16 +126,12 @@ function ShippingForm() {
             return { ...prev, province: true };
           })
         }
-        value={cartPayload.receiver.province?.name!}
-        onCheckTextInput={(text) => {
-          return cartPayload.receiver.orderType === OrderType.TAKE_AWAY
-            ? true
-            : checkInputNotEmpty(cartPayload.receiver.province?.name!);
-        }}
-        errorText="Không được để trống"
+        value={getValues('province')}
+        errorText={errors.province?.message}
       />
-      <DeliveryTextInput
-        name="district"
+      <AppInputText
+        disabled={true}
+        register={register('district')}
         placeHolder="Quận/Huyện"
         required
         suffixIcon={ARROW_DOWN_ICON}
@@ -128,16 +140,12 @@ function ShippingForm() {
             return { ...prev, district: true };
           })
         }
-        value={cartPayload.receiver.district?.name}
-        onCheckTextInput={(text) => {
-          return cartPayload.receiver.orderType === OrderType.TAKE_AWAY
-            ? true
-            : checkInputNotEmpty(cartPayload.receiver.district?.name);
-        }}
-        errorText="Không được để trống"
+        value={getValues('district')}
+        errorText={errors.district?.message}
       />
-      <DeliveryTextInput
-        name="ward"
+      <AppInputText
+        disabled={true}
+        register={register('ward')}
         placeHolder="Phường/Xã"
         required
         suffixIcon={ARROW_DOWN_ICON}
@@ -146,29 +154,18 @@ function ShippingForm() {
             return { ...prev, ward: true };
           })
         }
-        value={cartPayload.receiver.ward?.name}
-        onCheckTextInput={(text) => {
-          return cartPayload.receiver.orderType === OrderType.TAKE_AWAY
-            ? true
-            : checkInputNotEmpty(cartPayload.receiver.ward?.name);
-        }}
-        errorText="Không được để trống"
+        value={getValues('ward')}
+        errorText={errors.ward?.message}
       />
-      <DeliveryTextInput
-        name="details"
+
+      <AppInputText
+        register={register('details')}
         placeHolder="Địa chỉ nhận hàng"
         required
-        value={cartPayload.receiver.details}
-        onChange={(e) =>
-          dispatch(updateCustomerAddressInfoAction({ details: e.target.value }))
-        }
-        onCheckTextInput={(text) => {
-          return cartPayload.receiver.orderType === OrderType.TAKE_AWAY
-            ? true
-            : checkInputNotEmpty(cartPayload.receiver.details);
-        }}
-        errorText="Không được để trống"
+        value={getValues('details')}
+        errorText={errors.details?.message}
       />
+
       {modal()}
     </>
   );

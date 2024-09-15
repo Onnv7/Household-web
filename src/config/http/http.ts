@@ -1,4 +1,8 @@
 import axios from 'axios';
+import { toastNotification } from '../../common/ultils/notification.ulti';
+import { googleLogout } from '@react-oauth/google';
+import { useAuthContext } from '../../context/auth.context';
+import { refreshToken } from '../../domain/usecase/auth.usecase';
 
 const BASE_URL = 'http://localhost:8000/api';
 export const http = axios.create({
@@ -19,45 +23,43 @@ const setAuthToken = () => {
 };
 setAuthToken();
 
-httpAuth.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
+export function useInterceptor() {
+  const { userId, authDispatch } = useAuthContext();
 
-      try {
-        // Gọi API để refresh token
-        const response = await http.post(
-          '/auth/refresh-token',
-          {},
-          {
-            withCredentials: true, // Đảm bảo gửi cookie chứa refreshToken
-          },
-        );
+  httpAuth.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    async (error) => {
+      const originalRequest = error.config;
+      if (
+        error.response &&
+        error.response.status === 500 &&
+        !originalRequest._retry
+      ) {
+        originalRequest._retry = true;
 
-        const newAccessToken = response.data.accessToken;
+        try {
+          const { accessToken } = await refreshToken();
 
-        // Cập nhật lại access token trong headers
-        httpAuth.defaults.headers.common['Authorization'] =
-          `Bearer ${newAccessToken}`;
-        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+          httpAuth.defaults.headers.common['Authorization'] =
+            `Bearer ${accessToken}`;
+          originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
 
-        // Thực hiện lại yêu cầu ban đầu
-        return httpAuth(originalRequest);
-      } catch (refreshError) {
-        // Xử lý lỗi khi refresh token thất bại (ví dụ: đăng xuất người dùng)
-        console.error('Refresh token failed:', refreshError);
-        return Promise.reject(refreshError);
+          return httpAuth(originalRequest);
+        } catch (refreshError) {
+          authDispatch({ type: 'LOGOUT' });
+          toastNotification({
+            msg: 'Có lỗi, vui lòng đăng nhập lại',
+            type: 'error',
+          });
+          googleLogout();
+
+          return Promise.reject(refreshError);
+        }
       }
-    }
 
-    return Promise.reject(error);
-  },
-);
+      return Promise.reject(error);
+    },
+  );
+}

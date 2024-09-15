@@ -5,6 +5,7 @@ export type CreateOrderResponse = {
 };
 
 export type ItemListResponse = {
+  thumbnailUrl: string;
   productId: number;
   skuId?: number;
   skuName?: string;
@@ -27,4 +28,32 @@ export type GetOrderBillByIdResponse = {
   totalOrder: number;
   note: string;
   createdAt: Date;
+};
+
+export type GetOrderBillDetailResponse = {
+  id: number;
+  type: OrderType;
+  orderEventList: {
+    status: OrderBillStatus;
+    note: OrderBillStatus;
+    createdAt: Date;
+  }[];
+  itemList: ItemListResponse[];
+  receiver: ReceiverResponse;
+  totalOrder: number;
+  note: string;
+  createdAt: Date;
+};
+
+export type OrderBillItemPage = {};
+export type GetOrderBillPageResponse = {
+  totalPage: number;
+  orderList: {
+    id: number;
+    imageUrl: string;
+    productName: string;
+    totalOrder: number;
+    createdAt: Date;
+    status: OrderBillStatus;
+  }[];
 };

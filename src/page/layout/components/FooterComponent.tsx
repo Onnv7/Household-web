@@ -10,10 +10,10 @@ import TWITTER_CIRCLE_ICON from '@src/assets/icon/twitter_green_circle.png';
 import YOUTUBE_CIRCLE_ICON from '@src/assets/icon/youtube_green_circle.png';
 const FooterComponent = () => {
   return (
-    <div className="mx-4 my-4">
+    <div className="mx-auto my-4 w-[80%]">
       <div className="mx-4 grid grid-cols-[250px_minmax(100px,_1fr)] gap-4">
         <div className="heir-img:mr-1 heir-img:inline-block">
-          <img src={LOGO_APP_ICON} />
+          <img src={LOGO_APP_ICON} className="mx-auto block w-[4rem]" />
           <p className="my-3">Awesome grocery store website template</p>
           <div>
             <img src={LOCATION_ICON} className="" />
@@ -98,7 +98,7 @@ const FooterComponent = () => {
         </div> */}
       </div>
       <hr className="my-5" />
-      <div className="child-div: justify-ev flex">
+      <div className="flex child-div: justify-ev">
         <div className="basis-1/4">
           <span>
             © 2022, <div className="inline text-primary-2">Nest</div> - HTML
@@ -106,8 +106,8 @@ const FooterComponent = () => {
           </span>
           <p></p>
         </div>
-        <div className="flex basis-2/4 justify-center heir-img:mr-2">
-          <div className="mx-3 flex items-center">
+        <div className="flex justify-center basis-2/4 heir-img:mr-2">
+          <div className="flex items-center mx-3">
             <img src={PHONE_CALL_ICON} alt="" className="h-[38px] w-[30px]" />
             <span className="inline-block">
               <p className="text-[30px] font-bold leading-[33px] text-primary-2">
@@ -116,7 +116,7 @@ const FooterComponent = () => {
               <p className="text-[12px] text-gray-500">Working 8:00 - 22:00</p>
             </span>
           </div>
-          <div className="mx-3 flex items-center">
+          <div className="flex items-center mx-3">
             <img src={PHONE_CALL_ICON} alt="" className="h-[38px] w-[30px]" />
             <span className="inline-block">
               <p className="text-[30px] font-bold leading-[33px] text-primary-2">

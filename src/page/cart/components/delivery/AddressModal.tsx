@@ -21,6 +21,9 @@ function AddressModal({
   dataList,
 }: AddressModalProps) {
   const [key, setKey] = useState('');
+  const [searchResult, setSearchResult] = useState<any[] | undefined>(
+    undefined,
+  );
   const [itemList, setItemList] = useState<any[]>([]);
   useEffect(() => {
     const loadingData = async () => {
@@ -54,7 +57,19 @@ function AddressModal({
               name=""
               id=""
               value={key}
-              onChange={(e) => setKey(e.target.value)}
+              onChange={(e) => {
+                setKey(e.target.value);
+                if (e.target.value.trim() === '') {
+                  setSearchResult(undefined);
+                } else {
+                  const filterData = itemList.filter((item) =>
+                    item.name
+                      .toLowerCase()
+                      .includes(e.target.value.toLowerCase()),
+                  );
+                  setSearchResult(filterData);
+                }
+              }}
               placeholder="Tìm kiếm"
               className="w-[100%] bg-transparent outline-none"
             />
@@ -68,22 +83,39 @@ function AddressModal({
             )}
           </div>
           <ul className="my-3 overflow-y-auto">
-            {itemList.map((item) => {
-              return (
-                <li
-                  className="h-[38px] w-[100%] cursor-pointer select-none content-center px-3 transition-all delay-[10000] ease-in-out hover:rounded-md hover:bg-[#f4f4f4] active:bg-green-200"
-                  onClick={(e) => {
-                    if (onChoose !== undefined) {
-                      onChoose({ name: item.name, id: item.id });
-                    }
-                    onClose();
-                  }}
-                  key={item.id}
-                >
-                  {item.name}
-                </li>
-              );
-            })}
+            {searchResult
+              ? searchResult.map((item) => {
+                  return (
+                    <li
+                      className="h-[38px] w-[100%] cursor-pointer select-none content-center px-3 transition-all delay-[10000] ease-in-out hover:rounded-md hover:bg-[#f4f4f4] active:bg-green-200"
+                      onClick={(e) => {
+                        if (onChoose !== undefined) {
+                          onChoose({ name: item.name, id: item.id });
+                        }
+                        onClose();
+                      }}
+                      key={item.id}
+                    >
+                      {item.name}
+                    </li>
+                  );
+                })
+              : itemList.map((item) => {
+                  return (
+                    <li
+                      className="h-[38px] w-[100%] cursor-pointer select-none content-center px-3 transition-all delay-[10000] ease-in-out hover:rounded-md hover:bg-[#f4f4f4] active:bg-green-200"
+                      onClick={(e) => {
+                        if (onChoose !== undefined) {
+                          onChoose({ name: item.name, id: item.id });
+                        }
+                        onClose();
+                      }}
+                      key={item.id}
+                    >
+                      {item.name}
+                    </li>
+                  );
+                })}
           </ul>
         </div>
       </div>

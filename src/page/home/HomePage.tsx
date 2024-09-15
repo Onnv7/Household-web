@@ -5,6 +5,7 @@ import { useEffect, useLayoutEffect, useState } from 'react';
 import { ProductCardPageEntity } from '../../domain/entity/product.entity';
 import { getProductPage } from '../../domain/usecase/home.usecase';
 import FeatureProductListComponent from './components/FeaturedProductList/FeatureProductListComponent';
+import { formatDate } from '../../common/ultils/format.ultil';
 
 const HomePage = () => {
   const [productCardPage, setProductCardPage] =
@@ -20,7 +21,7 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="mx-auto w-[80%]">
+      <div className="mx-auto w-[60%]">
         <div className="mb-4 flex aspect-[5/1] w-full justify-center">
           <BannerComponent />
         </div>

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import classNames from 'classnames';
-import { UseFormRegisterReturn } from 'react-hook-form';
+import { UseFormRegisterReturn, UseFormReturn } from 'react-hook-form';
 
 interface RegisterInputTextProps {
+  className?: string;
   name?: string;
   placeHolder?: string;
   required?: boolean;
@@ -14,27 +15,30 @@ interface RegisterInputTextProps {
   errorText?: string;
   onClickSuffixIcon?: () => void;
   register?: UseFormRegisterReturn<any>;
+  disabled?: boolean;
 }
 
-function RegisterInputText({
+function AppInputText({
+  className,
   placeHolder = '',
   required = false,
   suffixIcon,
   value = '',
   errorText,
+  maxLength,
   onClickSuffixIcon,
   register,
   type,
+  disabled = false,
 }: RegisterInputTextProps) {
-  const [inputValue, setInputValue] = useState(value);
   return (
-    <div className={`mt-3 inline-block w-[100%]`}>
+    <div className={`${className} mt-3 inline-block w-[100%]`}>
       <div className="relative w-[100%]">
         <input
+          maxLength={maxLength}
           {...register}
           onChange={(e) => {
             register?.onChange(e);
-            setInputValue(e.target.value);
           }}
           type={type}
           className={classNames({
@@ -42,11 +46,12 @@ function RegisterInputText({
               true,
             'border-red-500 focus:border-red-500': errorText,
           })}
+          disabled={disabled}
         />
 
         <label
           className={
-            inputValue.length > 0
+            value.length > 0
               ? classNames({
                   'absolute left-0 mx-2 my-1 origin-top-left -translate-y-[calc(50%_+_5px)] scale-[0.7] select-none bg-white font-[14px] leading-[15px] text-primary-2':
                     true,
@@ -75,5 +80,5 @@ function RegisterInputText({
     </div>
   );
 }
-
-export default RegisterInputText;
+export default AppInputText;
+// export default memo(RegisterInputText);

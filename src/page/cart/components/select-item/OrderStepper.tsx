@@ -10,7 +10,7 @@ function OrderStepper({ step }: OrderStepperProps) {
     <div className="relative mx-auto h-[100px] w-[60%] bg-[#f4f4f4]">
       <div className="absolute top-12 mx-auto flex w-[100%] justify-between bg-[#f4f4f4]">
         <div
-          className={`bg-primary-2 before:text-primary-2 z-[2] h-[30px] w-[30px] rounded-full text-center align-middle leading-[30px] text-white before:absolute before:bottom-[100%] before:w-[150px] before:-translate-x-[calc(50%)] before:text-center before:content-['Select_Item'] ${step >= 1 ? 'bg-primary-2 before:text-primary-2' : 'bg-gray-400 before:text-gray-400'}`}
+          className={`z-[2] h-[30px] w-[30px] rounded-full bg-primary-2 text-center align-middle leading-[30px] text-white before:absolute before:bottom-[100%] before:w-[150px] before:-translate-x-[calc(50%)] before:text-center before:text-primary-2 before:content-['Select_Item'] ${step >= 1 ? 'bg-primary-2 before:text-primary-2' : 'bg-gray-400 before:text-gray-400'}`}
         >
           <p>1</p>
         </div>
@@ -28,7 +28,7 @@ function OrderStepper({ step }: OrderStepperProps) {
           <div className="absolute z-0 h-[2px] w-[100%] bg-gray-500"></div>
           <div
             className={classNames({
-              'bg-primary-2 absolute z-[1] h-[2px]': true,
+              'absolute z-[1] h-[2px] bg-primary-2': true,
               'w-[0%]': step === 1,
               'w-[50%]': step === 2,
               'w-[100%]': step === 3,

@@ -1,4 +1,9 @@
-import { LoginEntity } from '../../../domain/entity/login.entity';
+import {
+  GoogleAuthEntity,
+  LoginEntity,
+  RefreshTokenEntity,
+  UpdatePasswordEntity,
+} from '../../../domain/entity/auth.entity';
 import {
   RegisterUserFormEntity,
   registerUserFormToRegisterRequest,
@@ -22,8 +27,11 @@ export class UserAuthRepository {
     const body = registerUserFormToRegisterRequest(data);
     await this.userAuthApi.register(body);
   }
-
+  async updatePassword(userId: number, data: UpdatePasswordEntity) {
+    await this.userAuthApi.updatePassword(userId, data);
+  }
   savingUserAuth(data: LoginResponse) {
+    console.log('🚀 ~ UserAuthRepository ~ savingUserAuth ~ data:', data);
     this.userAuthLocalStorage.saveCredentials(data);
   }
   clearCredentials() {
@@ -36,5 +44,13 @@ export class UserAuthRepository {
 
   getAccessToken() {
     return this.userAuthLocalStorage.getAccessToken();
+  }
+
+  async validateGoogleAccount(header: GoogleAuthEntity) {
+    return await this.userAuthApi.validateGoogleAccount({ ...header });
+  }
+
+  async refreshToken(): Promise<RefreshTokenEntity> {
+    return await this.userAuthApi.refreshToken();
   }
 }

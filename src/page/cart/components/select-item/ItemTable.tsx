@@ -30,7 +30,7 @@ function ItemTable() {
     <table className="mb-10">
       <thead className="h-[40px] overflow-hidden bg-white">
         <tr className="">
-          <th className="rounded-l-md px-3">
+          <th className="px-3 rounded-l-md">
             <input
               type="checkbox"
               className="h-[16px] w-[16px] accent-green-600"
@@ -61,7 +61,7 @@ function ItemTable() {
             return (
               <ItemCart
                 itemCart={item}
-                key={item.productId + '' + item?.skuId}
+                key={item.productId + '-' + item?.skuId}
               />
             );
           })}

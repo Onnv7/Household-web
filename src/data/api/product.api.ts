@@ -15,12 +15,6 @@ export class ProductAPI {
     size: number,
     query?: ProductFilterQueryEntity,
   ): Promise<GetProductListResponse> {
-    console.log(
-      `/product/visible?page=${page}&size=${size}` +
-        (query?.key ? `&key=${query!.key}` : '') +
-        (query?.categoryId ? `&category=${query!.categoryId}` : '') +
-        (query?.sort ? `&sort=${query.sort}` : ''),
-    );
     const responseData: IResponse<GetProductListResponse> = (
       await http.get(
         `/product/visible?page=${page}&size=${size}` +

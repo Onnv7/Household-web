@@ -9,7 +9,7 @@ import {
   updateItemCartLocalStorage,
 } from '../../../domain/usecase/cart.usecase';
 import {
-  CustomerOrderInfoEntity,
+  DeliveryOrderInfoEntity,
   ItemCartEntity,
   ItemCartStorageEntity,
 } from '../../../domain/entity/cart.entity';
@@ -17,10 +17,10 @@ import cartRepository from '../../../data/repository/cart/cart.index';
 import productRepository from '../../../data/repository/product';
 import { ProductDetailsEntity } from '../../../domain/entity/product.entity';
 import { OrderType } from '../../../common/enum/enum';
+import { CartLocalStorage } from '../../../data/local/cart.localstorage';
 
 type CartStateType = {
   itemList: ItemCartEntity[];
-  receiver: CustomerOrderInfoEntity;
 };
 const initLocation = {
   id: '',
@@ -28,21 +28,12 @@ const initLocation = {
 };
 const initialState: CartStateType = {
   itemList: [],
-  receiver: {
-    orderType: OrderType.DELIVERY,
-    name: '',
-    phoneNumber: '',
-    province: initLocation,
-    district: initLocation,
-    ward: initLocation,
-    details: '',
-    note: '',
-  },
 };
 
 export const getItemCartListThunk = createAsyncThunk(
   'cart/get-items-info',
   async (_, thunkAPI) => {
+    console.log('sos');
     try {
       const items: ItemCartStorageEntity[] = cartRepository.getItemCartList();
 
@@ -50,28 +41,33 @@ export const getItemCartListThunk = createAsyncThunk(
       const fetchItemInfo = async (item: ItemCartStorageEntity) => {
         const product: ProductDetailsEntity =
           await productRepository.getProductDetails(item.productId);
-
+        const sku = product.productSKUList.find((sku) => {
+          return sku.id === item.skuId;
+        });
+        console.log('🚀 ~ fetchItemInfo ~ sku:', sku);
+        if (product.productSKUList.length > 0 && !sku) {
+          cartRepository.removeProduct(item.productId, item.skuId);
+          return;
+        }
         const itemInfo: ItemCartEntity = {
           productId: product.id,
           skuId: item.skuId,
           imageUrl: product.productImageList[0],
-          price:
-            product.productSKUList.length > 0
-              ? product.productSKUList.find((sku) => sku.id === item.skuId)!
-                  .price
-              : product.price,
+          price: sku ? sku.price : product.price,
           productName: product.name,
           skuName: product.productSKUList.find((sku) => sku.id === item.skuId)
             ?.name,
           quantity: item.quantity,
           isSelected: false,
         };
+        console.log('🚀 ~ fetchItemInfo ~ itemInfo:', product);
         data.push(itemInfo);
       };
       await Promise.all(items.map((it) => fetchItemInfo(it)));
 
       return data;
     } catch (error) {
+      console.log('🚀 ~ error:', error);
       return thunkAPI.rejectWithValue('Loading failed');
     }
   },
@@ -196,33 +192,6 @@ const cartSlice = createSlice({
         existingItem.note = action.payload.note;
       }
     },
-
-    updateCustomerAddressInfoAction: (
-      state,
-      action: PayloadAction<Partial<CustomerOrderInfoEntity>>,
-    ) => {
-      if (
-        action.payload.province &&
-        state.receiver.province !== action.payload.province
-      ) {
-        state.receiver.district = initLocation;
-        state.receiver.ward = initLocation;
-      } else if (
-        action.payload.district &&
-        state.receiver.district !== action.payload.district
-      ) {
-        state.receiver.ward = initLocation;
-      }
-
-      Object.assign(state.receiver, action.payload);
-    },
-    submitOrderAction: (state) => {
-      const customer = state.receiver;
-      // if (!checkInputNotEmpty(customer.name)) {
-      //   state.hasError!.customerName = true;
-      // }
-      state.receiver = { ...Object.assign({}, customer) };
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(getItemCartListThunk.fulfilled, (state, action) => {
@@ -239,7 +208,5 @@ export const {
   changeAllItemCartAction,
   clearAllItemCartAction,
   noteItemCartAction,
-  updateCustomerAddressInfoAction,
-  submitOrderAction,
 } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -1,7 +1,7 @@
 import addressRepository from '../../data/repository/address/address.index';
 import cartRepository from '../../data/repository/cart/cart.index';
 import orderRepository from '../../data/repository/order/order.index';
-import { CustomerOrderInfoEntity, ItemCartEntity } from '../entity/cart.entity';
+import { ItemCartEntity, DeliveryOrderInfoEntity } from '../entity/cart.entity';
 
 export const getExistedItemCart = (
   itemList: ItemCartEntity[],
@@ -55,15 +55,23 @@ export const getWardList = async (provinceId: string, wardId: string) => {
 };
 
 export const createOrder = async (
+  userId: number,
   itemList: ItemCartEntity[],
-  receiver: CustomerOrderInfoEntity,
+  receiver: DeliveryOrderInfoEntity,
 ) => {
-  itemList.forEach((item) => {
-    cartRepository.removeProduct(item.productId, item.skuId);
-  });
-  return await orderRepository.createOrder(itemList, receiver);
+  const orderId = await orderRepository.createOrder(userId, itemList, receiver);
+
+  if (orderId)
+    itemList.forEach((item) => {
+      cartRepository.removeProduct(item.productId, item.skuId);
+    });
+  return orderId;
 };
 
-export const getOrderDetails = async (orderId: number) => {
-  return await orderRepository.getOrderBill(orderId);
+export const getOrderBillResult = async (orderId: number) => {
+  return await orderRepository.getOrderBillResult(orderId);
+};
+
+export const getOrderBillDetail = async (orderId: number) => {
+  return await orderRepository.getOrderBillDetail(orderId);
 };

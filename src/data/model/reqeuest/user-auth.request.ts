@@ -1,11 +1,20 @@
 export type LoginRequest = {
-  username: string;
+  email: string;
   password: string;
 };
 
 export type RegisterRequest = {
   firstName: string;
   lastName: string;
-  username: string;
+  email: string;
   password: string;
 };
+
+export type UpdatePasswordRequest = {
+  oldPassword: string;
+  newPassword: string;
+};
+
+export type GoogleAuthHeader =
+  | { code: string } // Chỉ được phép có `code`, không có `idToken`
+  | { idToken: string };

@@ -1,14 +1,7 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import { createContext, useContext, useEffect, useReducer } from 'react';
 import { AuthAction, AuthReducer, AuthState } from './auth.reducer';
 import userRepository from '../data/repository/user';
 import userAuthRepository from '../data/repository/user-auth';
-import { boolean } from 'zod';
 let userData = null;
 if (localStorage.getItem('user') !== 'undefined') {
   userData = JSON.parse(localStorage.getItem('user-id')!);
@@ -48,11 +41,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const loadingData = async () => {
       if (state.userId) {
         try {
-          const data = await userRepository.getUserProfile(state.userId);
+          const data = await userRepository.getFirstName(state.userId);
         } catch (err) {
           dispatch({ type: 'LOGIN_FAILURE' });
-          userAuthRepository.clearCredentials();
         }
+      } else {
+        userAuthRepository.clearCredentials();
       }
     };
     loadingData();

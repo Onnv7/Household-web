@@ -2,43 +2,85 @@ import { useState } from 'react';
 import COVER_IMAGE from './../../assets/login_cover_image.png';
 import ICON_IMAGE from './../../assets/login_icon_image.png';
 import LOGIN_GOOGLE_ICON from './../../assets/login_with_google_icon.png';
-import { LoginEntity } from '../../domain/entity/login.entity';
-import { login } from '../../domain/usecase/auth.usecase';
+import { LoginEntity } from '../../domain/entity/auth.entity';
+import {
+  login,
+  validateGoogleAccount,
+} from '../../domain/usecase/auth.usecase';
 import { useAuthContext } from '../../context/auth.context';
 import { Link, useNavigate } from 'react-router-dom';
 import { RouterConstants } from '../../common/constant/route.constant';
-import { AxiosError } from 'axios';
-import { ErrorResponseEntity } from '../../domain/entity/common.entity';
 import { toastNotification } from '../../common/ultils/notification.ulti';
 import { handleException } from '../../common/ultils/exception.ulti';
+import { useGoogleLogin, useGoogleOneTapLogin } from '@react-oauth/google';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState<Partial<LoginEntity>>();
   const { authDispatch, userId } = useAuthContext();
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: async (codeResponse) => {
+      try {
+        const data = await validateGoogleAccount({ code: codeResponse.code });
+        authDispatch({ type: 'LOGIN_SUCCESS', payload: data.userId });
+        navigate(RouterConstants.home.index);
+        toastNotification({
+          msg: 'Đăng nhập thành công',
+        });
+      } catch (e) {
+        handleException(e);
+      }
+    },
+    flow: 'auth-code',
+  });
+  useGoogleOneTapLogin({
+    onSuccess: async (credentialResponse) => {
+      try {
+        const data = await validateGoogleAccount({
+          idToken: credentialResponse.credential!,
+        });
+        authDispatch({ type: 'LOGIN_SUCCESS', payload: data.userId });
+        navigate(RouterConstants.home.index);
+        toastNotification({
+          msg: 'Đăng nhập thành công',
+        });
+      } catch (e) {
+        handleException(e);
+      }
+    },
+    onError: () => {
+      console.log('Login Failed');
+    },
+    auto_select: false,
+    use_fedcm_for_prompt: true,
+  });
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="relative flex h-full w-3/4 flex-col">
-        <img src={COVER_IMAGE} className="h-full w-full" />
+    <div className="flex items-center justify-center h-screen">
+      <div className="relative flex flex-col w-3/4 h-full">
+        <img src={COVER_IMAGE} className="w-full h-full" />
       </div>
-      <div className="h-full w-1/4 p-10">
-        <div className="my-6">
-          <img src={ICON_IMAGE} className="mr-2 inline"></img>
+      <div className="w-1/4 h-full p-10">
+        <div
+          className="my-6 cursor-pointer"
+          onClick={() => navigate(RouterConstants.home.index)}
+        >
+          <img src={ICON_IMAGE} className="inline mr-2"></img>
           <p className="inline font-bold">UI Unicorn</p>
         </div>
         <div>
           <p className="text-[24px] font-bold">Rất vui được gặp bạn</p>
-          <div className="my-4 w-full">
+          <div className="w-full my-4">
             <div className="mb-4">
-              <p className="mb-2 ml-3">Tên đăng nhập</p>
+              <p className="mb-2 ml-3">Địa chỉ email</p>
               <input
                 type="text"
                 placeholder="Địa chỉ email"
-                className="h-12 w-full rounded-md bg-gray-200 p-2 focus:outline-gray-400"
-                value={credentials?.username}
+                className="w-full h-12 p-2 bg-gray-200 rounded-md focus:outline-gray-400"
+                value={credentials?.email}
                 onChange={(e) =>
                   setCredentials((prev) => {
-                    return { ...prev, username: e.target.value };
+                    return { ...prev, email: e.target.value };
                   })
                 }
               />
@@ -48,7 +90,7 @@ const LoginPage = () => {
               <input
                 type="password"
                 placeholder="Mật khẩu"
-                className="h-12 w-full rounded-lg bg-gray-200 p-2 focus:outline-gray-400"
+                className="w-full h-12 p-2 bg-gray-200 rounded-lg focus:outline-gray-400"
                 value={credentials?.password}
                 onChange={(e) =>
                   setCredentials((prev) => {
@@ -61,15 +103,18 @@ const LoginPage = () => {
               <p className="text-right text-blue-700">Quên mật khẩu?</p>
             </a>
             <button
-              className="my-8 w-full rounded-md bg-primary-2 p-3 font-bold text-white hover:bg-green-600"
+              className="w-full p-3 my-8 font-bold text-white rounded-md bg-primary-2 hover:bg-green-600"
               onClick={handleLogin}
             >
               Đăng nhập
             </button>
           </div>
           <hr className="border-t-2"></hr>
-          <button className="my-8 w-full rounded-md bg-black p-3 text-white hover:bg-gray-900">
-            <img src={LOGIN_GOOGLE_ICON} className="mr-2 inline"></img>Or sign
+          <button
+            className="w-full p-3 my-8 text-white bg-black rounded-md hover:bg-gray-900"
+            onClick={() => loginWithGoogle()}
+          >
+            <img src={LOGIN_GOOGLE_ICON} className="inline mr-2"></img>Or sign
             in with Google
           </button>
           <span>

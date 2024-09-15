@@ -7,6 +7,7 @@ const ErrorMessageCode = {
   1801: 'Tên tài khoản đã tồn tại vui lòng chọn tên khác',
 };
 export const handleException = (e: any) => {
+  console.log('🚀 ~ handleException ~ e:', e);
   e = e as Error;
   if (e instanceof AxiosError) {
     const error: ErrorResponseEntity = e.response?.data.error;

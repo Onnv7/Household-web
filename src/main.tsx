@@ -10,14 +10,17 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
-// "plugins": ["prettier-plugin-tailwindcss"],
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
-    <LoadingProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </LoadingProvider>
-    <ToastContainer />
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <LoadingProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </LoadingProvider>
+      <ToastContainer />
+    </GoogleOAuthProvider>
   </Provider>,
 );

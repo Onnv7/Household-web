@@ -14,4 +14,13 @@ export const RouterConstants = {
   register: {
     index: '/register',
   },
+  account: {
+    index: '/account',
+    profile: '/account#profile',
+    password: '/account#password',
+    history: '/account#history',
+  },
+  order: {
+    index: '/order',
+  },
 };

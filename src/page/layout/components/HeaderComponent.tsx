@@ -5,12 +5,14 @@ import CART_ICON from '@src/assets/cart_icon.png';
 import ACCOUNT_ICON from '@src/assets/account_icon.png';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthContext } from '../../../context/auth.context';
-import { getUserProfile } from '../../../domain/usecase/global.usecase';
+import { getFirstName } from '../../../domain/usecase/global.usecase';
 import { RouterConstants } from '../../../common/constant/route.constant';
 import categoryRepository from '../../../data/repository/category/category.index';
 import { toastNotification } from '../../../common/ultils/notification.ulti';
 import { useControlPanel } from '../../../hook/useControlPanel';
 import { CategoryFilterEntity } from '../../../domain/entity/category.entity';
+import { googleLogout } from '@react-oauth/google';
+import { UserAuthAPI } from '../../../data/api/user-auth.api';
 const HeaderComponent = () => {
   const { userId, authDispatch } = useAuthContext();
 
@@ -35,8 +37,8 @@ const HeaderComponent = () => {
   useEffect(() => {
     const loadData = async () => {
       if (userId) {
-        const userProfile = await getUserProfile(userId!);
-        setUserName(userProfile.username);
+        const userProfile = await getFirstName(userId!);
+        setUserName(userProfile.firstName);
       } else {
         setUserName('Đăng nhập');
       }
@@ -69,6 +71,7 @@ const HeaderComponent = () => {
   }
   function handleOnSignOut() {
     authDispatch({ type: 'LOGOUT' });
+    googleLogout();
     toastNotification({ msg: 'Đăng xuất thành công' });
   }
   function handleSearchProduct() {
@@ -76,14 +79,16 @@ const HeaderComponent = () => {
     else navigate('/');
   }
   return (
-    <div className="my-2">
+    <div className="mx-auto my-2 w-[80%]">
       <div className="mb-2 flex h-[50px] w-full items-center justify-between">
         <img
           alt=""
           src={LOGO_APP_ICON}
           className="mx-5 h-full grow-[1] cursor-pointer object-scale-down"
-          onClick={() => {
-            navigate('/');
+          onClick={async () => {
+            const api = new UserAuthAPI();
+            await api.refreshToken();
+            // navigate('/');
           }}
         />
         <div className="flex grow-[12] rounded-md border-2 border-primary-2 p-2">
@@ -141,7 +146,13 @@ const HeaderComponent = () => {
             <p className="inline">Giỏ hàng</p>
           </div>
           <div
-            onClick={handleOpenProfileMenu}
+            onClick={() => {
+              if (userId) {
+                handleOpenProfileMenu();
+              } else {
+                navigate(RouterConstants.login.index);
+              }
+            }}
             className="relative flex w-[120px] items-end justify-center rounded-md px-2 py-3 hover:cursor-pointer hover:bg-green-100"
           >
             <img src={ACCOUNT_ICON} alt="" className="inline" />
@@ -153,12 +164,22 @@ const HeaderComponent = () => {
               >
                 <li
                   className="hover:bg-green-300"
-                  onClick={() => navigate('/register')}
+                  onClick={() => navigate(RouterConstants.account.profile)}
                 >
                   Thông tin cá nhân
                 </li>
-                <li className="hover:bg-green-300">Đơn hàng</li>
-                <li className="hover:bg-green-300">Đổi mật khẩu</li>
+                <li
+                  className="hover:bg-green-300"
+                  onClick={() => navigate(RouterConstants.account.history)}
+                >
+                  Đơn hàng
+                </li>
+                <li
+                  className="hover:bg-green-300"
+                  onClick={() => navigate(RouterConstants.account.password)}
+                >
+                  Đổi mật khẩu
+                </li>
                 <li
                   className="hover:bg-green-300"
                   onClick={() => handleOnSignOut()}

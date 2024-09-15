@@ -1,6 +1,3 @@
-import { GetProvinceListResponse } from '../../data/model/response/address.response';
-import { GetProductListResponse } from '../../data/model/response/product.response';
-
 export class LocationEntity {
   constructor(id: string, name: string) {
     this.id = id;
@@ -19,3 +16,9 @@ export class LocationEntity {
 export class ProvinceEntity extends LocationEntity {}
 
 export class DistrictEntity extends LocationEntity {}
+
+export type AddressChosenEntity = {
+  provinceId?: string;
+  districtId?: string;
+  wardId?: string;
+};

@@ -1,35 +1,31 @@
 import React, { useState } from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 
 type AppRadioProps = {
   label: string;
   name?: string;
   value?: string | number;
   defaultChecked?: boolean;
+  register?: UseFormRegisterReturn<any>;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-function AppRadio({
-  label,
-  name = '',
-  value,
-  onChange,
-  defaultChecked,
-}: AppRadioProps) {
+function AppRadio({ label, value, defaultChecked, register }: AppRadioProps) {
   return (
-    <div className="flex cursor-pointer items-center gap-2">
-      <label className="flex cursor-pointer select-none items-center gap-2">
+    <div className="flex items-center gap-2 cursor-pointer">
+      <label className="flex items-center gap-2 cursor-pointer select-none">
         <input
           type="radio"
-          className="peer hidden"
-          name={name}
+          className="hidden peer"
           value={value}
-          onChange={(e) => {
-            if (onChange != undefined) onChange(e);
-          }}
+          {...register}
+          // onChange={(e) => {
+          //   if (onChange != undefined) onChange(e);
+          // }}
           defaultChecked={defaultChecked}
         />
         <span
-          className={`peer-checked:border-primary-2 flex h-[16px] w-[16px] items-center justify-center rounded-full border-[1px] border-gray-400 bg-transparent peer-checked:*:bg-green-600`}
+          className={`flex h-[16px] w-[16px] items-center justify-center rounded-full border-[1px] border-gray-400 bg-transparent peer-checked:border-primary-2 peer-checked:*:bg-green-600`}
         >
           <div
             className={`h-[10px] w-[10px] rounded-full align-middle leading-[16px]`}

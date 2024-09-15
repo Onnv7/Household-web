@@ -1,0 +1,16 @@
+.horizontal-dash-line {
+  border-width: var(--width-line);
+
+  border-image: repeating-linear-gradient(
+    to right,
+    red 0,
+    red var(--dash-size),
+    transparent var(--dash-size),
+    transparent calc(var(--space-size) + var(--dash-size)),
+    blue calc(var(--space-size) + var(--dash-size)),
+    blue calc(var(--space-size) + var(--dash-size) * 2),
+    transparent calc(var(--space-size) + var(--dash-size) * 2),
+    transparent calc(var(--space-size) * 2 + var(--dash-size) * 2)
+  );
+  border-image-slice: 1;
+}

@@ -10,6 +10,7 @@ import {
 } from '../../redux/cart.slice';
 import { isValidNumber } from '../../../../common/ultils/number.ultils';
 import { formatMoneyString } from '../../../../common/ultils/format.ultil';
+import { Link } from 'react-router-dom';
 
 type ItemCartProps = {
   itemCart: ItemCartEntity;
@@ -55,7 +56,12 @@ const ItemCart = ({ itemCart }: ItemCartProps) => {
         />
       </td>
       <td className="px-3 py-3">
-        <div className="flex w-[500px] items-center justify-start">
+        <Link
+          className="flex w-[500px] cursor-pointer items-center justify-start"
+          to={`/product/${itemCart.productId}${
+            itemCart.skuId ? `?sku=${itemCart.skuId}` : ''
+          }`}
+        >
           <img
             className="mr-2 h-[60px] w-[60px] rounded-md border-[1px]"
             src={itemCart.imageUrl}
@@ -65,7 +71,7 @@ const ItemCart = ({ itemCart }: ItemCartProps) => {
             {itemCart.productName +
               (itemCart.skuName ? ' - ' + itemCart.skuName : '')}
           </p>
-        </div>
+        </Link>
       </td>
       <td className="px-3">{formatMoneyString(itemCart.price)}</td>
       <td className="px-3">

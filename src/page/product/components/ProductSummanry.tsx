@@ -18,6 +18,7 @@ type ProductSummaryProps = {
   productInfo: ProductDetailsEntity;
 };
 const ProductSummary = ({ productInfo }: ProductSummaryProps) => {
+  console.log('🚀 ~ ProductSummary ~ productInfo:', productInfo);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthContext();
@@ -28,9 +29,14 @@ const ProductSummary = ({ productInfo }: ProductSummaryProps) => {
       ? productInfo.productSKUList[0].price
       : productInfo.price,
   );
-  const [skuSelected, setSkuSelected] = useState<number>(
-    Number(new URLSearchParams(useLocation().search).get('sku')) ?? 0,
+  const [skuSelected, setSkuSelected] = useState<number | undefined>(
+    new URLSearchParams(useLocation().search).get('sku')
+      ? Number(new URLSearchParams(useLocation().search).get('sku'))
+      : productInfo.productSKUList.length > 0
+        ? productInfo.productSKUList[0].id
+        : undefined,
   );
+  console.log('🚀 ~ ProductSummary ~ skuSelected:', skuSelected);
 
   const handleQuantity = (action: QuantityAction) => {
     let newQuantity;
@@ -49,10 +55,10 @@ const ProductSummary = ({ productInfo }: ProductSummaryProps) => {
         type: 'warning',
       });
     } else {
-      const skuChosen =
-        productInfo.productSKUList.length > 0
-          ? productInfo.productSKUList[skuSelected]
-          : undefined;
+      const skuChosen = productInfo.productSKUList.find(
+        (item) => item.id === skuSelected,
+      );
+
       addProductToCart(productInfo.id, quantity, skuChosen?.id);
       toastNotification({
         msg: `Đã thêm ${quantity} ${productInfo.name} ${skuChosen?.name ? `- ${skuChosen?.name}` : ''} vào giỏ hàng`,
@@ -60,18 +66,18 @@ const ProductSummary = ({ productInfo }: ProductSummaryProps) => {
     }
   };
 
-  const handleChooseSKU = (price: number, skuIndex: number) => {
+  const handleChooseSKU = (price: number, skuId: number) => {
     setPrice(price);
-    setSkuSelected(skuIndex);
-    navigate(`?sku=${skuIndex}`, { replace: true });
+    setSkuSelected(skuId);
+    navigate(`?sku=${skuId}`, { replace: true });
   };
 
   return (
-    <div className="h-fit p-4">
+    <div className="p-4 h-fit">
       <h1 className="text-[3rem] font-[700] leading-[48px]">
         {productInfo.name}
       </h1>
-      {/* <span className="my-3 flex items-center">
+      {/* <span className="flex items-center my-3">
         <StarReview rating={4} size={16} />
         <p className="text-[14px] text-[#B6B6B6]">(32 review)</p>
       </span> */}
@@ -87,11 +93,11 @@ const ProductSummary = ({ productInfo }: ProductSummaryProps) => {
               key={sku.id}
               className={
                 'my-4 inline-block w-fit cursor-pointer rounded-sm border-[1px] px-2 py-1 ' +
-                (skuSelected === index
+                ((index === 0 && !skuSelected) || skuSelected === sku.id
                   ? 'border-primary-2'
                   : 'border-gray-400 bg-gray-100')
               }
-              onClick={() => handleChooseSKU(sku.price, index)}
+              onClick={() => handleChooseSKU(sku.price, sku.id)}
             >
               <p className="text-normal">{sku.name}</p>
             </div>
@@ -99,7 +105,7 @@ const ProductSummary = ({ productInfo }: ProductSummaryProps) => {
         })}
       </div>
 
-      <div className="my-3 flex gap-2 py-3">
+      <div className="flex gap-2 py-3 my-3">
         <span className="flex w-[160px] rounded-md border-[2px] border-[#3BB77E] p-2">
           <div
             className="basis-1/3 cursor-pointer select-none text-center text-[20px] font-bold"
@@ -129,7 +135,7 @@ const ProductSummary = ({ productInfo }: ProductSummaryProps) => {
             src={ADD_TO_CART_ICON}
             alt=""
           />
-          <p className="inline-block uppercase text-white">Thêm vào giỏ hàng</p>
+          <p className="inline-block text-white uppercase">Thêm vào giỏ hàng</p>
         </button>
         <button
           type="button"

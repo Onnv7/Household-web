@@ -4,8 +4,8 @@ import LOCATION_ON_ICON from '../../../../assets/icon/location_on_icon.svg';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { RouterConstants } from '../../../../common/constant/route.constant';
 import { useEffect, useState } from 'react';
-import { OrderDetailEntity } from '../../../../domain/entity/order.entity';
-import { getOrderDetails } from '../../../../domain/usecase/cart.usecase';
+import { OrderResultEntity } from '../../../../domain/entity/order.entity';
+import { getOrderBillResult } from '../../../../domain/usecase/cart.usecase';
 import { OrderType } from '../../../../common/enum/enum';
 import {
   formatDate,
@@ -15,10 +15,10 @@ function OrderResult() {
   const navigate = useNavigate();
   const { orderId } = useLocation().state;
 
-  const [order, setOrder] = useState<OrderDetailEntity>();
+  const [order, setOrder] = useState<OrderResultEntity>();
   useEffect(() => {
     const loadingData = async () => {
-      const orderData = await getOrderDetails(orderId);
+      const orderData = await getOrderBillResult(orderId);
       setOrder(orderData);
     };
     loadingData();

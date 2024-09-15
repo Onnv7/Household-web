@@ -20,20 +20,21 @@ import 'swiper/css/navigation';
 import FilterProductPage from './page/filter-product/FilterProductPage';
 import ProtectedRoutePage from './page/protected-route/ProtectedRoutePage';
 import RegisterPage from './page/register/RegisterPage';
-import APage from './APage';
-import BPage from './BPage';
+import AccountPage from './page/profile/AccountPage';
+import OrderPage from './page/order/OrderPage';
+import { useInterceptor } from './config/http/http';
 
 const router = createBrowserRouter(
   createRoutesFromElements([
     <Route>
       <Route path="/" element={<RootLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="/a" element={<APage />} />
-        <Route path="/b" element={<BPage />} />
         <Route path="/search" element={<FilterProductPage />} />
         <Route path="product/:id" element={<ProductPage />} />
         <Route element={<ProtectedRoutePage />}>
-          <Route path="cart" element={<CartPage />} />
+          <Route path="/account" element={<AccountPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/order/:id" element={<OrderPage />} />
         </Route>
       </Route>
     </Route>,
@@ -46,6 +47,7 @@ const router = createBrowserRouter(
   ]),
 );
 function App() {
+  useInterceptor();
   return <RouterProvider router={router} />;
 }
 

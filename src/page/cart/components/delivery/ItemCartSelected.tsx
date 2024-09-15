@@ -27,26 +27,30 @@ function ItemCartSelected() {
       <div>
         <table className="w-[100%] gap-2">
           <thead className="mb-3 h-[40px] overflow-hidden bg-[#F7F8F9]">
-            <th className="rounded-l-md px-2 text-start">Sản phẩm</th>
-            <th>Đơn giá</th>
-            <th>Số lượng</th>
-            <th>Thành tiền</th>
+            <tr>
+              <th className="px-2 rounded-l-md text-start">Sản phẩm</th>
+              <th>Đơn giá</th>
+              <th>Số lượng</th>
+              <th>Thành tiền</th>
+            </tr>
           </thead>
           <tbody>
             {getProductSelected().length > 0 &&
               getProductSelected().map((item, index) => {
                 const isModalOpen = openModalIndex === index;
                 return (
-                  <tr className="child:text-center" key={item.skuId}>
+                  <tr className="child:text-center" key={index}>
                     <td className="not-child">
-                      <div className="mt-3 flex h-full items-center">
+                      <div className="flex items-center h-full mt-3">
                         <img
                           src={item.imageUrl}
                           alt=""
                           className="mx-2 h-[60px] w-[60px] rounded-md border-[1px]"
                         />
                         <div className="flex h-[60px] flex-col justify-between py-[4px]">
-                          <p className="text-[14px]">{item.price}</p>
+                          <p className="text-[14px]">
+                            {formatMoneyString(item.price)}
+                          </p>
                           <div className="flex items-center text-[14px]">
                             <p
                               className="cursor-pointer text-primary-2"

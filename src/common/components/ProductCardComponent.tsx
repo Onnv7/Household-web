@@ -32,7 +32,7 @@ const ProductCardComponent = ({ productInfo }: ItemCardComponentProps) => {
         </span>
 
         <span>
-          <p className="inline-block mr-4 line-through">$120</p>
+          <p className="mr-4 inline-block line-through">$120</p>
           <p className="inline-block font-[700] text-[#0989FF]">
             ${productInfo.price || <Skeleton />}
           </p>

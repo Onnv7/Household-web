@@ -33,13 +33,13 @@ const CartPage = () => {
   }, [page, selectedItem, navigate]);
 
   return (
-    <div className="h-full w-[100%] bg-[#f4f4f4]">
+    <div className="h-full w-[100%] bg-gray-2">
       <OrderStepper step={step} />
       {step === 2 ? (
         <div className="mx-auto w-[60%]">
-          <FormProvider>
-            <DeliveryInformation />
-          </FormProvider>
+          {/* <FormProvider> */}
+          <DeliveryInformation />
+          {/* </FormProvider> */}
         </div>
       ) : step === 3 ? (
         <OrderResult />

@@ -1,4 +1,7 @@
-export function formatMoneyString(money: number): string {
+export function formatMoneyString(money?: number): string {
+  if (!money) {
+    return '';
+  }
   return money.toLocaleString('vn-VN', {
     style: 'currency',
     currency: 'VND',

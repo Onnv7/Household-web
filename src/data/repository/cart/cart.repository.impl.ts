@@ -91,9 +91,16 @@ export class CartRepository implements ICartRepository {
     let products = productList
       ? (JSON.parse(productList) as ItemCartStorageModel[])
       : [];
-    const updatedCartItems = products.filter(
-      (item) => item.productId !== productId && item.skuId !== skuId,
-    );
+    let updatedCartItems = [];
+    if (skuId) {
+      updatedCartItems = products.filter(
+        (item) => item.productId !== productId && item.skuId !== skuId,
+      );
+    } else {
+      updatedCartItems = products.filter(
+        (item) => item.productId !== productId,
+      );
+    }
 
     localStorage.setItem('products', JSON.stringify(updatedCartItems));
   }

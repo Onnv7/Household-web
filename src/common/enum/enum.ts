@@ -19,9 +19,9 @@ export enum CategoryStatus {
 
 export enum OrderBillStatus {
   CREATED = 'CREATED',
-  ACCEPTED = 'ACCEPTED',
-  REFUSED = 'REFUSED',
-  SUCCEEDED = 'SUCCEEDED',
+  PROCESSING = 'PROCESSING',
+  PENDING_PICKUP = 'PENDING_PICKUP',
+  COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',
 }
 
@@ -30,4 +30,9 @@ export enum SortType {
   DESC_PRICE = 'DESC_PRICE',
   ASC_ALPHABETICAL = 'ASC_ALPHABETICAL',
   DESC_ALPHABETICAL = 'DESC_ALPHABETICAL',
+}
+
+export enum Gender {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
 }

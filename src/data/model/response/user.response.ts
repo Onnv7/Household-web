@@ -1,6 +1,9 @@
+import { Gender } from '../../../common/enum/enum';
+
 export type GetUserProfileResponse = {
   id: number;
-  username: string;
+  email: string;
   firstName: string;
   lastName: string;
+  gender: Gender;
 };
