@@ -76,7 +76,7 @@ const HeaderComponent = () => {
   }
   function handleSearchProduct() {
     if (keySearch.trim() !== '') navigate(`/search?key=${keySearch}`);
-    else navigate('/');
+    else navigate(RouterConstants.home.index);
   }
   return (
     <div className="mx-auto my-2 w-[80%]">
@@ -86,9 +86,7 @@ const HeaderComponent = () => {
           src={LOGO_APP_ICON}
           className="mx-5 h-full grow-[1] cursor-pointer object-scale-down"
           onClick={async () => {
-            const api = new UserAuthAPI();
-            await api.refreshToken();
-            // navigate('/');
+            navigate(RouterConstants.home.index);
           }}
         />
         <div className="flex grow-[12] rounded-md border-2 border-primary-2 p-2">

@@ -10,17 +10,17 @@ function OrderStepper({ step }: OrderStepperProps) {
     <div className="relative mx-auto h-[100px] w-[60%] bg-[#f4f4f4]">
       <div className="absolute top-12 mx-auto flex w-[100%] justify-between bg-[#f4f4f4]">
         <div
-          className={`z-[2] h-[30px] w-[30px] rounded-full bg-primary-2 text-center align-middle leading-[30px] text-white before:absolute before:bottom-[100%] before:w-[150px] before:-translate-x-[calc(50%)] before:text-center before:text-primary-2 before:content-['Select_Item'] ${step >= 1 ? 'bg-primary-2 before:text-primary-2' : 'bg-gray-400 before:text-gray-400'}`}
+          className={`z-[2] h-[30px] w-[30px] rounded-full bg-primary-2 text-center align-middle leading-[30px] text-white before:absolute before:bottom-[100%] before:w-[150px] before:-translate-x-[calc(50%)] before:text-center before:text-primary-2 before:content-['Chọn_sản_phẩm'] ${step >= 1 ? 'bg-primary-2 before:text-primary-2' : 'bg-gray-400 before:text-gray-400'}`}
         >
           <p>1</p>
         </div>
         <div
-          className={`z-[2] h-[30px] w-[30px] rounded-full text-center align-middle leading-[30px] text-white before:absolute before:bottom-[100%] before:w-[150px] before:-translate-x-[calc(50%)] before:text-center before:content-['Delivery_Information'] ${step >= 2 ? 'bg-primary-2 before:text-primary-2' : 'bg-gray-400 before:text-gray-400'}`}
+          className={`z-[2] h-[30px] w-[30px] rounded-full text-center align-middle leading-[30px] text-white before:absolute before:bottom-[100%] before:w-[150px] before:-translate-x-[calc(50%)] before:text-center before:content-['Thông_tin_đặt_hàng'] ${step >= 2 ? 'bg-primary-2 before:text-primary-2' : 'bg-gray-400 before:text-gray-400'}`}
         >
           <p>2</p>
         </div>
         <div
-          className={`z-[2] h-[30px] w-[30px] rounded-full text-center align-middle leading-[30px] text-white before:absolute before:bottom-[100%] before:w-[150px] before:-translate-x-[calc(50%)] before:text-center before:content-['Order_Confirm'] ${step >= 3 ? 'bg-primary-2 before:text-primary-2' : 'bg-gray-400 before:text-gray-400'}`}
+          className={`z-[2] h-[30px] w-[30px] rounded-full text-center align-middle leading-[30px] text-white before:absolute before:bottom-[100%] before:w-[150px] before:-translate-x-[calc(50%)] before:text-center before:content-['Kết_quả'] ${step >= 3 ? 'bg-primary-2 before:text-primary-2' : 'bg-gray-400 before:text-gray-400'}`}
         >
           <p>3</p>
         </div>
